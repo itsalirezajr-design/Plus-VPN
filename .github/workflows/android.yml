@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: '17'
       - name: Configure Android SDK
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
@@ -26,6 +26,17 @@ jobs:
         run: yes | sdkmanager --licenses || true
       - name: Install Android SDK
         run: sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+      - name: Fetch official libXray Android core
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p app/libs
+          curl -fL --retry 3 --retry-delay 2 \
+            https://github.com/XTLS/libXray/releases/download/v26.7.28/libxray-android.zip \
+            -o /tmp/libxray-android.zip
+          unzip -j /tmp/libxray-android.zip '*libXray.aar' -d app/libs
+          test -s app/libs/libXray.aar
+          ls -lh app/libs/libXray.aar
       - name: Build debug APK
         run: gradle :app:assembleDebug
       - uses: actions/upload-artifact@v4

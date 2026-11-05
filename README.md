@@ -1,20 +1,18 @@
-# Plus VPN — Android prototype
+# Plus VPN
 
-Persian RTL Android prototype for a planned free, one-tap VPN.
+Persian RTL Android VPN client with one-tap automatic server selection.
 
-## Included
-- Android Compose interface branded Plus VPN.
-- Basic VLESS and legacy VMess URI parsing.
-- TCP endpoint reachability checks and latency sorting.
-- GitHub Actions workflow that builds and uploads a debug APK.
+## Implemented in this milestone
+- Android `VpnService` TUN interface.
+- Official XTLS libXray Android core downloaded by CI from a pinned upstream release.
+- Automatic VLESS node retrieval from a public community feed.
+- Candidate failover and HTTPS verification through the device VPN tunnel.
+- Foreground notification with a disconnect action.
 
-## Important
-This is **not yet a working VPN**. It does not establish a VPN tunnel and does not include Xray/WireGuard integration, automatic public-node discovery, proxy-handshake verification, or end-to-end traffic verification. The connect control is intentionally disabled to avoid claiming a connection that does not exist.
+## Infrastructure and privacy limits
+Plus VPN does not operate or own VPN gateway servers. It discovers publicly shared third-party nodes. Those operators may log or inspect traffic metadata; nodes can disappear or be blocked. No uptime, privacy, bandwidth, or speed guarantee is possible. Do not use public volunteer nodes for banking, passwords, or sensitive accounts. A genuinely Plus VPN-owned server fleet requires hosting infrastructure and an operator; an APK alone cannot create remote VPN servers.
 
-TCP latency only measures whether a remote TCP port accepts a connection. It is not ICMP ping and does not prove that a proxy or internet tunnel works.
+The public feed is an external dependency and can change or become unavailable. Automatic selection checks the device's HTTPS path, not only TCP port reachability.
 
-A free app build does not make VPN infrastructure free. Public endpoints can disappear, be overloaded, or be untrustworthy; unlimited free bandwidth and uptime cannot be guaranteed without an operator providing servers.
-
-
-## Build workflow
-The repository builds a debug APK through GitHub Actions on pushes to the main branch.
+## Build
+GitHub Actions downloads the pinned libXray Android AAR and builds the debug APK.
