@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.net.VpnService
+import android.os.Build
 import android.os.ParcelFileDescriptor
 import libXray.DialerController
 import libXray.LibXray
@@ -53,6 +54,8 @@ class XrayVpnService : VpnService() {
                 .setMtu(1500)
                 .addAddress("10.77.0.2", 30)
                 .addRoute("0.0.0.0", 0)
+                .addAddress("fd00:77::2", 126)
+                .addRoute("::", 0)
                 .addDnsServer("1.1.1.1")
                 .setBlocking(true)
                 .establish() ?: error("Android نتوانست رابط VPN را بسازد")
@@ -146,8 +149,12 @@ class XrayVpnService : VpnService() {
         val stopIntent = PendingIntent.getService(this, 1,
             Intent(this, XrayVpnService::class.java).setAction(ACTION_DISCONNECT),
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
-        return Notification.Builder(this, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.stat_sys_warning)
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Notification.Builder(this, CHANNEL_ID)
+        } else {
+            Notification.Builder(this)
+        }
+        return builder.setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle("Plus VPN").setContentText(message)
             .setContentIntent(openApp).setOngoing(true).setOnlyAlertOnce(true)
             .addAction(android.R.drawable.ic_media_pause, "قطع اتصال", stopIntent).build()
