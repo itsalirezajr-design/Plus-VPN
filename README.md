@@ -14,3 +14,7 @@ This is **not yet a working VPN**. It does not establish a VPN tunnel and does n
 TCP latency only measures whether a remote TCP port accepts a connection. It is not ICMP ping and does not prove that a proxy or internet tunnel works.
 
 A free app build does not make VPN infrastructure free. Public endpoints can disappear, be overloaded, or be untrustworthy; unlimited free bandwidth and uptime cannot be guaranteed without an operator providing servers.
+
+
+## Build workflow
+The repository builds a debug APK through GitHub Actions on pushes to the main branch.
